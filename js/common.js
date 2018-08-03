@@ -52,7 +52,7 @@ function cnblogs(){
 //百度
 function baidu(){
 	var $normal_ads = $("span:contains('广告')");
-	var $brand_ads = $("a:contains('广告')");
+	var $brand_ads = $("a:contains('品牌广告')");
 	function removeItem(v){
         var $this = $(v);
         var i=0;
@@ -60,7 +60,9 @@ function baidu(){
             $this = $this.parent();
             i++;
         }
-        $this.fadeOut(1200);
+        if($this.parent().attr('id') === 'content_left') {
+            $this.fadeOut(1200);
+        }
 	}
 	$normal_ads.each(function(i,v){
 		removeItem(v);
