@@ -1,7 +1,7 @@
 var adUrls = [
-  {"r":"https://blog.csdn.net","f":csdn,"p":{}},
-  {"r":"https://www.cnblogs.com","f":cnblogs,"p":{}},
-  {"r":"https://www.baidu.com","f":baidu,"p":{}},
+  {"r":"blog.csdn.net","f":csdn,"p":{}},
+  {"r":"www.cnblogs.com","f":cnblogs,"p":{}},
+  {"r":"www.baidu.com","f":baidu,"p":{}},
 ];
 function removeAds(eles){
 	eles.forEach(function(v,i,a){
