@@ -2,6 +2,7 @@ var adUrls = [
   {"r":"blog.csdn.net","f":csdn,"p":{}},
   {"r":"www.cnblogs.com","f":cnblogs,"p":{}},
   {"r":"www.baidu.com","f":baidu,"p":{}},
+  {"r":"www.yiibai.com/spring_mvc/","f":yiibai,"p":{}}
 ];
 function removeAds(eles){
 	eles.forEach(function(v,i,a){
@@ -41,13 +42,19 @@ function killAdTimeout(flag){
 //CSDN
 function csdn(){
 	var o = [".meau-list","header","#csdn-toolbar","aside",".comment-box",".recommend-box",".t0",".related-article",
-	".article-bar-bottom",".meau-gotop-box","#pic_container",".answer-box","#_kfgdmxteyi",".pic_container"];
+	".article-bar-bottom",".pulllog-box",".pulllog-box",".meau-gotop-box","#pic_container",".answer-box","#_kfgdmxteyi",".pic_container"];
 	removeAds(o);
 }
 //博客园
 function cnblogs(){
 	var o = ["#header","#sideBar","#MySignature","#blog_post_info_block",".postDesc","#comment_form","#footer","#blog-comments-placeholder"];
 	removeAds(o);
+}
+//yiibai
+function yiibai(){
+    var o = ["#google_image_div","#adContent-clickOverlay","#adv-javalive",
+    "#adContent","iframe",".adsbygoogle","#footer-copyright",".footer"];
+    removeAds(o);
 }
 //百度
 function baidu(){
