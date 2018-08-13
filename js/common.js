@@ -42,7 +42,7 @@ function killAdTimeout(flag){
 //CSDN
 function csdn(){
 	var o = [".meau-list","header","#csdn-toolbar","aside",".comment-box",".recommend-box",".t0",".related-article",
-	".article-bar-bottom",".pulllog-box",".pulllog-box",".meau-gotop-box","#pic_container",".answer-box","#_kfgdmxteyi",".pic_container"];
+	".article-bar-bottom",".pulllog-box",'.p4course_target',".pulllog-box",".meau-gotop-box","#pic_container",".answer-box","#_kfgdmxteyi",".pic_container"];
 	removeAds(o);
 }
 //博客园
