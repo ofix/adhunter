@@ -84,7 +84,7 @@ function emitJs_cnblogs(js,ele){
     }
     gEmitJs++;
     var code = [
-         `$(document).click('.compile-mode',function(){
+         `$(document).on('click','.compile-mode',function(){
             var ele = ["#header","#right","#mystats",
             "#mylinks","#bnr_pic","#sideBar",
             "#MySignature","#blog_post_info_block",".postDesc",
