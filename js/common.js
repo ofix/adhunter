@@ -84,13 +84,13 @@ function emitJs_cnblogs(js,ele){
     }
     gEmitJs++;
     var code = [
-         `$(document).click(function(){
+         `$('.compile-mode').click(function(){
             var ele = ["#header","#right","#mystats",
             "#mylinks","#bnr_pic","#sideBar",
             "#MySignature","#blog_post_info_block",".postDesc",
             "#comment_form","#footer","#blog-comments-placeholder"];
             ele.forEach(function(v,i,a){
-                $(v).show();
+                $(v).toggle();
             });
          });`
     ];
