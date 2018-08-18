@@ -33,7 +33,6 @@ function killAdTimeout(flag){
             _c=0;
             userFlag = 0;
         }else{
-            console.log("杀死广告");
             killAd();
             _c++;
         }
@@ -60,13 +59,17 @@ function emitCss_cnblogs(css){
     gEmitCss++;
     var template = '<style type="text/css">#1</style>';
     var code = [
-       `.compile-mode:{
-            width:200px;
-            height:40px;
+       `.compile-mode{
+            width:120px;
+            height:64px;
+            line-height:64px;
+            background-color:#D1B3DF;
+            color:#714386;
             text-align:center;
             position:fixed;
             right:20px;
             bottom:20px;
+            cursor:pointer;
         }`
     ];
     var css = document.createElement('style');
@@ -117,8 +120,8 @@ function cnblogs(){
 	$(".post").css({'border':"none;"});
     $("#mainContent").css({"margin-left":"150px","margin-right":"150px"});
     $("body").css({"background":""});
-    emitHtml_cnblogs();
     emitCss_cnblogs();
+    emitHtml_cnblogs();
     emitJs_cnblogs();
 }
 //yiibai
