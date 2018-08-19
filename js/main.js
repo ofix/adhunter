@@ -1,1 +1,1 @@
-killAdTimeout();
+killAd();

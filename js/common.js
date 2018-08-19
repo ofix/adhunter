@@ -1,47 +1,112 @@
-var adUrls = [
-  {"r":"blog.csdn.net","f":csdn,"p":{}},
-  {"r":"www.cnblogs.com","f":cnblogs,"p":{}},
-  {"r":"www.baidu.com","f":baidu,"p":{}},
-  {"r":"www.yiibai.com/spring_mvc/","f":yiibai,"p":{}}
-];
-function removeAds(eles){
-	eles.forEach(function(v,i,a){
-	   $(v).hide().css("overflow","hidden");
+var adUrls = {
+    "blog.csdn.net":[CSDN],
+    "www.cnblogs.com":[CnBlogs],
+    "www.baidu.com":[BaiDu,1],
+    "www.yiibai.com":[YiiBai]
+};
+
+function hiddenAdElements(){
+	gAdElements.forEach(function(v,i,a){
+	   $(v).hide().width(0).height(0).css("overflow","hidden");
 	});
+    gMode = 0;
 }
-function killAd(){
-    var url = window.location.href;
-    adUrls.forEach(function(v,i,a){
-        r = v.r;
-        if(url.indexOf(r) !== -1){
-            (v.f)();
-        }
+function hiddenNavElements(){
+    gNavigator.forEach(function(v,i,a){
+       $(v).hide().width(0).height(0).css("overflow","hidden");
     });
 }
-var userFlag=0;
-var gTimer;
-function killAdTimeout(flag){
-    if(userFlag !==0){
-        return;
+function killAd(){
+    var host = window.location.host;
+    try{
+      if(adUrls.hasOwnProperty(host)){
+         if(adUrls[host].length ===1){
+             (adUrls[host][0])();
+             hiddenAdElements();
+         }else{
+            var count = 0;
+            var timer = setInterval(function(){
+                if(count>10){
+                    clearInterval(timer);
+                    count=0;
+                }else{
+                    (adUrls[host][0])();
+                    count++;
+                }//end else
+            },600);
+         }//end else
+      }
+      installToolbar();
+      saveNavigator();
+      hiddenNavElements();
+    }catch(e){
+        console.log(e);
     }
-	if(arguments[0] && userFlag ===0){
-		userFlag = 1;
-	}
-    var _c = 0;
-    gTimer = setInterval(function(){
-        if(_c>10){
-            clearInterval(gTimer);
-            _c=0;
-            userFlag = 0;
-        }else{
-            killAd();
-            _c++;
-        }
-    },600);
 }
+
+function saveNavigator(){
+    if(gOriginCssStack.length==0){
+        pushCssToStack(gNavigator);
+    }
+}
+
+/**
+ * @todo 保存CSS样式堆栈
+ * @author code lighter
+ * @date 2018/8/19 23:21:00
+ */
+var gOriginCssStack=[];
+var gFixedCssStack=[];
+var gMode = 0;
+function pushCssToStack(elements){
+    elements.forEach(function(v,i,a){
+        var c = v.substr(0, 1);
+        var ele;
+        if(c === '#'){
+            ele = document.getElementById(v.replace(/[#]/, ''));
+        }else if(c==='.'){
+            ele = document.querySelector(v);
+        }else{
+            ele = document.getElementsByTagName(v)[0];
+        }
+        if(ele === null || ele === undefined){
+            console.error("element "+v+" not found. ");
+            return false;
+        }
+        var css=getElementAllCss(ele);
+        gOriginCssStack.push([v,css]);
+    });
+}
+function popCssFromStack(elements){
+    gOriginCssStack.forEach(function(v,i,a){
+        $(v[0]).css('left',v[1][0]);
+        $(v[0]).css('top',v[1][1]);
+        $(v[0]).css('width',v[1][2]);
+        $(v[0]).css('height',v[1][3]);
+        $(v[0]).show();
+    });
+}
+// function isArray(o){
+//     return Object.prototype.toString.call(o) === '[object Array]';
+// }
+function getElementAllCss(element){
+    var css = !element.currentStyle?window.getComputedStyle(element,null):element.currentStyle;
+    return [css.left,css.top,css.width,css.height];
+}
+
+/**
+ * @todo 添加页面工具栏
+ * @author code lighter
+ * @date 2018/8/19 23:21:00
+ */
 var gEmitCss = 0;
 var gEmitJs = 0;
 var gEmitHtml = 0;
+function installToolbar(){
+    emitToolbarCss();
+    emitToolbarHtml();
+    // emitToolbarJs();
+}
 //发射代码
 function emitCode(code,ele){
     $(ele).append(code);
@@ -53,7 +118,7 @@ function compile(code,template){
     }
     return template;
 }
-function emitCss_cnblogs(css){
+function emitToolbarCss(){
     if(gEmitCss>0){
         return;
     }
@@ -61,6 +126,7 @@ function emitCss_cnblogs(css){
     var template = '<style type="text/css">#1</style>';
     var code = [
        `.compile-mode{
+            z-index:1000000 !important;
             width:120px;
             height:64px;
             line-height:64px;
@@ -78,62 +144,70 @@ function emitCss_cnblogs(css){
     css.appendChild(document.createTextNode(code.join(' ')));
     $(document.head).append(css);
 }
-
-function emitJs_cnblogs(js,ele){
-    if(gEmitJs>0){
-        return;
+$(document).on('click','.compile-mode',function(){
+    if(gMode==0||gMode === undefined){
+        gMode=1
+        popCssFromStack();
+    }else{
+        gMode = 0;
+        killAd();
     }
-    gEmitJs++;
-    var code = [
-         `$(document).on('click','.compile-mode',function(){
-            var ele = ["#header","#right","#mystats",
-            "#mylinks","#bnr_pic","#sideBar",
-            "#MySignature","#blog_post_info_block",".postDesc",
-            "#comment_form","#footer","#blog-comments-placeholder"];
-            ele.forEach(function(v,i,a){
-                $(v).toggle();
-            });
-         });`
-    ];
-    var js = document.createElement('script');
-    js.textContent = code.join(' ');
-    document.body.appendChild(js);
+ });
+
+function emitToolbarJs(js,ele){
+    // if(gEmitJs>0){
+    //     return;
+    // }
+    // gEmitJs++;
+    // var code = [
+    //      ``
+    // ];
+    // var js = document.createElement('script');
+    // js.textContent = code.join(' ');
+    // document.body.appendChild(js);
 }
-function emitHtml_cnblogs(){
+function emitToolbarHtml(){
     if(gEmitHtml>0){
         return;
     }
     gEmitHtml++;
-    var template = '<div class="compile-mode">切换模式</div>';
+    var template = '<div class="compile-mode">阅读模式</div>';
     $(document.body).append(template);
 }
+
+/**
+ * @todo 将页面需要处理的元素进行分类
+ * @author code lighter
+ * @date 2018/8/19 23:21:00
+ */
+ var gAdElements=[]; //页面必须杀掉的广告元素
+ var gNavigator=[];//页面保留的导航元素
 //CSDN
-function csdn(){
-	var o = [".meau-list","header","#csdn-toolbar","aside",".comment-box",".recommend-box",".t0",".related-article",
-	".article-bar-bottom",".pulllog-box",'.p4course_target',".pulllog-box",".meau-gotop-box","#pic_container",".answer-box","#_kfgdmxteyi",".pic_container"];
-	removeAds(o);
-}
+function CSDN(){
+    gAdElements = ["#adAways",".comment-box","header",".t0",".persion_article",".article-bar-bottom",
+        ".pulllog-box",'.p4course_target',".pulllog-box",".meau-gotop-box","#pic_container",".answer-box",
+        "#_kfgdmxteyi",".pic_container","iframe",".newsfeed",".box-box-large",".bdsharebuttonbox","#_360_interactive",
+        "#asideNewComments",".mb8"];
+    gNavigator = ["#csdn-toolbar","#asideArchive",".related-article","#asideHotArticle",".meau-list","#asideProfile",
+    "#asideNewArticle","#asideCategory",".recommend-box",".recommend-box-ident","._4paradigm_box"];
+    $('.comment-box').before('<div style="margin-top:20px;background:none;"></div>');
+} 
 //博客园
-function cnblogs(){
-	var o = ["#header","#right","#mystats","#mylinks","#bnr_pic","#sideBar","#MySignature","#blog_post_info_block",".postDesc","#comment_form","#footer","#blog-comments-placeholder"];
-	removeAds(o);
-    clearInterval(gTimer);
-	// $("#left").css({"left":"0px","top":"0px"});
-	// $(".post").css({'border':"none;"});
- //    $("#mainContent").css({"margin-left":"150px","margin-right":"150px"});
- //    $("body").css({"background":""});
-    emitCss_cnblogs();
-    emitHtml_cnblogs();
-    emitJs_cnblogs();
+function CnBlogs(){
+	gAdElements = ["#header","#right","#mystats","#mylinks","#bnr_pic","#sideBar","#MySignature","#blog_post_info_block",
+        ".postDesc","#comment_form","#footer","#blog-comments-placeholder"];
+	$("#left").css({"left":"0px","top":"0px"});
+	$(".post").css({'border':"none;"});
+    $("#mainContent").css({"margin-left":"150px","margin-right":"150px"});
+    $("body").css({"background":""});
 }
-//yiibai
-function yiibai(){
-    var o = ["#google_image_div","#adContent-clickOverlay","#adv-javalive",
-    "#adContent","iframe",".adsbygoogle","#footer-copyright",".footer"];
-    removeAds(o);
+//YiiBai
+function YiiBai(){
+    gAdElements = ["#google_image_div","#adContent-clickOverlay","#adv-javalive",
+        "#adContent","iframe",".adsbygoogle","#footer-copyright",".footer"];
 }
 //百度
-function baidu(){
+function BaiDu(){
 	var $normal_ads = $("span:contains('广告')");
 	var $brand_ads = $("a:contains('品牌广告')");
 	function removeItem(v){
@@ -144,7 +218,7 @@ function baidu(){
             i++;
         }
         if($this.parent().attr('id') === 'content_left') {
-            $this.fadeOut(1200);
+            $this.hide();
         }
 	}
 	$normal_ads.each(function(i,v){
