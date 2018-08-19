@@ -182,6 +182,16 @@ function emitToolbarHtml(){
  */
  var gAdElements=[]; //页面必须杀掉的广告元素
  var gNavigator=[];//页面保留的导航元素
+ var gComputeCss=[];//调整过的CSS
+ var gComputeBeforeCss=[];
+ function pushComputeCss(){
+    gComputeCss.forEach(function(v,i,a){
+        css = [];
+        (v[1]).forEach(function(v1,i1,a1){
+            
+        });
+    });
+ }
 //CSDN
 function CSDN(){
     gAdElements = ["#adAways",".comment-box","header",".t0",".persion_article",".article-bar-bottom",
@@ -196,10 +206,11 @@ function CSDN(){
 function CnBlogs(){
 	gAdElements = ["#header","#right","#mystats","#mylinks","#bnr_pic","#sideBar","#MySignature","#blog_post_info_block",
         ".postDesc","#comment_form","#footer","#blog-comments-placeholder"];
-	$("#left").css({"left":"0px","top":"0px"});
-	$(".post").css({'border':"none;"});
-    $("#mainContent").css({"margin-left":"150px","margin-right":"150px"});
-    $("body").css({"background":""});
+    gNavigator = ["#mylinks","#sideBar"];  
+    gComputeCss = [["#left",{"left":"0px","top":"0px"}],
+                [".post",{'border':"none;"}],
+                ["#mainContent",{"margin-left":"150px","margin-right":"150px"}],
+                ["body",{"background":""}]];
 }
 //YiiBai
 function YiiBai(){
