@@ -35,10 +35,10 @@ function killAd(){
                 }//end else
             },600);
          }//end else
+        installToolbar();
+        saveNavigator();
+        hiddenNavElements();
       }
-      installToolbar();
-      saveNavigator();
-      hiddenNavElements();
     }catch(e){
         console.log(e);
     }
