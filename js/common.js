@@ -5,6 +5,21 @@ var adUrls = {
     "www.yiibai.com":[YiiBai]
 };
 
+var map = {
+    "blog.csdn.net":"CSDN",
+    "www.cnblogs.com":"博客园",
+    "www.baidu.com":"百度",
+    "www.yiibai.com":"yiibai"
+};
+
+function getUrlCategory(){
+     var host = window.location.host;
+      if(adUrls.hasOwnProperty(host)){
+            return map[host];
+      }
+      return '';
+}
+
 function hiddenAdElements(){
 	gAdElements.forEach(function(v,i,a){
 	   $(v).hide().width(0).height(0).css("overflow","hidden");
@@ -102,6 +117,8 @@ function getElementAllCss(element){
 var gEmitCss = 0;
 var gEmitJs = 0;
 var gEmitHtml = 0;
+var gStarList = {};
+var css = [];
 function installToolbar(){
     emitToolbarCss();
     emitToolbarHtml();
@@ -119,31 +136,41 @@ function compile(code,template){
     return template;
 }
 function emitToolbarCss(){
-    if(gEmitCss>0){
-        return;
-    }
-    gEmitCss++;
-    var template = '<style type="text/css">#1</style>';
-    var code = [
-       `.compile-mode{
+   var code =[
+       `.compile-mode,.star,.star-list{
             z-index:1000000 !important;
             width:120px;
-            height:64px;
-            line-height:64px;
+            height:68px;
+            line-height:68px;
             background-color:#D1B3DF;
             color:#714386;
+            font-size:18px;
             text-align:center;
             position:fixed;
+            cursor:pointer;
+        }`,
+        `.compile-mode{
             right:20px;
             bottom:20px;
-            cursor:pointer;
+        }`,
+        `.star{
+            right:20px;
+            bottom:98px;
+        }`,
+        `.star-list{
+            right:20px;
+            bottom:174px;
         }`
     ];
     var css = document.createElement('style');
     css.type = 'text/css';
     css.appendChild(document.createTextNode(code.join(' ')));
     $(document.head).append(css);
+
+    // var meta = '<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>';
+    // $(document.head).prepend(meta);
 }
+
 $(document).on('click','.compile-mode',function(){
     if(gMode==0||gMode === undefined){
         gMode=1
@@ -153,6 +180,41 @@ $(document).on('click','.compile-mode',function(){
         killAd();
     }
  });
+$(document).on('click','.star',function(){
+    var url = location.href;
+    var title = document.title;
+    // if(getStarBlog(url) == null){
+       addStarBlog(title,url,getUrlCategory());
+    // }else{
+    //    delStarBlog(url);
+    // }
+});
+$(document).on('click','.star-list',function(){
+    var list = queryStarList();
+    var total = 0;
+    list.forEach(function(v,i,a){
+        console.log(v);
+        total++;
+    });
+    console.log("total item = ",total);
+});
+
+function queryStarList(){
+   
+}
+function getStarBlog(url){
+    console.log("getStarBlog url  = " ,url);
+    return chrome.storage.local.get(url.toString());
+}
+function addStarBlog(title,url,category){
+     $(document.body).append('<iframe src="https://xch.com/index/save?url='+url+
+                    '&title='+title+
+                    '&category='+category+'" width=0 height=0 frameborder="0" style="display:none;"></iframe>');
+}
+function delStarBlog(url){
+    chrome.storage.local.remove(url.toString());
+}
+
 
 function emitToolbarJs(js,ele){
     // if(gEmitJs>0){
@@ -171,7 +233,7 @@ function emitToolbarHtml(){
         return;
     }
     gEmitHtml++;
-    var template = '<div class="compile-mode">阅读模式</div>';
+    var template = '<div class="star-list">收藏夹</div><div class="star">收藏</div><div class="compile-mode">纯净模式</div>';
     $(document.body).append(template);
 }
 
