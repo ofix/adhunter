@@ -256,10 +256,10 @@ function emitToolbarHtml(){
  }
 //CSDN
 function CSDN(){
-    gAdElements = ["#adAways","header",".t0",".persion_article",".article-bar-bottom",
+    gAdElements = ["iframe","#adAways","header",".t0",".persion_article",".article-bar-bottom",
         ".pulllog-box",'.p4course_target',".pulllog-box",".meau-gotop-box","#pic_container",".answer-box",
         "#_kfgdmxteyi",".pic_container","iframe",".newsfeed",".box-box-large",".bdsharebuttonbox","#_360_interactive",
-        "#asideNewComments",".mb8"];
+        "#asideNewComments",".mb8",".custom-box"];
     gNavigator = ["#csdn-toolbar",".comment-box","#asideArchive",".related-article","#asideHotArticle",".meau-list","#asideProfile",
     "#asideNewArticle","#asideCategory",".recommend-box",".recommend-box-ident","._4paradigm_box"];
     $('.comment-box').before('<div style="margin-top:20px;background:none;"></div>');
