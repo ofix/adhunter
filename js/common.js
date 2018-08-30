@@ -2,7 +2,8 @@ var adUrls = {
     "blog.csdn.net":[CSDN],
     "www.cnblogs.com":[CnBlogs],
     "www.baidu.com":[BaiDu,1],
-    "www.yiibai.com":[YiiBai]
+    "www.yiibai.com":[YiiBai],
+    "www.jianshu.com":[JianShu]
 };
 
 var map = {
@@ -278,6 +279,13 @@ function CnBlogs(){
 function YiiBai(){
     gAdElements = ["#google_image_div","#adContent-clickOverlay","#adv-javalive",
         "#adContent","iframe",".adsbygoogle","#footer-copyright",".footer"];
+}
+//简书
+function JianShu(){
+    gAdElements = ['.navbar','#web-note-ad-fixed','.author',
+    '.support-author','.show-foot','.follow-detail','.meta-bottom','#web-note-ad-1',
+    '.comment-list'];
+    gNavigator= ['.side-tool','.note-bottom'];
 }
 //百度
 function BaiDu(){
