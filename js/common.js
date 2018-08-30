@@ -111,6 +111,20 @@ function getElementAllCss(element){
 }
 
 /**
+ *@todo 打印模式
+ *@author code lighter
+ *@date 2018/8/30
+ */
+$(document).on('keyup',function(e){
+    e = window.event || e || e.which;
+    if (e.keyCode === 118) { //F7 ,F1 -112 F12 -123
+        $('.star-list').toggle();
+        $('.star').toggle();
+        $('.compile-mode').toggle();
+    }
+});
+
+/**
  * @todo 添加页面工具栏
  * @author code lighter
  * @date 2018/8/19 23:21:00
@@ -255,6 +269,12 @@ function emitToolbarHtml(){
         });
     });
  }
+function padEle(ele,isBefore=true){
+    var str = '<div style="margin-top:20px;background:none;"></div>';
+    if(isBefore){
+        $(ele).before(str);
+    }
+} 
 //CSDN
 function CSDN(){
     gAdElements = ["iframe","#adAways","header",".t0",".persion_article",".article-bar-bottom",
@@ -263,7 +283,8 @@ function CSDN(){
         "#asideNewComments",".mb8",".custom-box"];
     gNavigator = ["#csdn-toolbar",".comment-box","#asideArchive",".related-article","#asideHotArticle",".meau-list","#asideProfile",
     "#asideNewArticle","#asideCategory",".recommend-box",".recommend-box-ident","._4paradigm_box"];
-    $('.comment-box').before('<div style="margin-top:20px;background:none;"></div>');
+    // $('.comment-box').before('');
+    padEle('.comment-box');
 } 
 //博客园
 function CnBlogs(){
@@ -284,8 +305,9 @@ function YiiBai(){
 function JianShu(){
     gAdElements = ['.navbar','#web-note-ad-fixed','.author',
     '.support-author','.show-foot','.follow-detail','.meta-bottom','#web-note-ad-1',
-    '.comment-list'];
+    '.comment-list','.normal-comment-list'];
     gNavigator= ['.side-tool','.note-bottom'];
+     padEle('.show-content');
 }
 //百度
 function BaiDu(){
