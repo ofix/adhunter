@@ -3,7 +3,9 @@ var adUrls = {
     "www.cnblogs.com":[CnBlogs],
     "www.baidu.com":[BaiDu,1],
     "www.yiibai.com":[YiiBai],
-    "www.jianshu.com":[JianShu]
+    "www.jianshu.com":[JianShu],
+    "www.sass.hk":[Sass],
+    "webpack.wuhaolin.cn":[Webpack]
 };
 
 var map = {
@@ -12,6 +14,78 @@ var map = {
     "www.baidu.com":"百度",
     "www.yiibai.com":"yiibai"
 };
+
+function Webpack(){
+    // $('iframe').remove();
+    // // $('#cf-style').remove();
+    // // $('link[as$="script"]').remove();
+    // $('.gitbook-plugin-modal').remove();
+}
+
+//sass
+function Sass(){
+    gAdElements=['.gg'];
+}
+
+//CSDN
+function CSDN(){
+    gAdElements = ["iframe","#adAways","header",".t0",".persion_article",".article-bar-bottom",
+        ".pulllog-box",'.p4course_target',".pulllog-box",".meau-gotop-box","#pic_container",".answer-box",
+        "#_kfgdmxteyi",".pic_container","iframe",".newsfeed",".box-box-large",".bdsharebuttonbox","#_360_interactive",
+        "#asideNewComments",".mb8",".custom-box"];
+    gNavigator = ["#csdn-toolbar",".comment-box","#asideArchive",".related-article","#asideHotArticle",".meau-list","#asideProfile",
+    "#asideNewArticle","#asideCategory",".recommend-box",".recommend-box-ident","._4paradigm_box"];
+    // $('.comment-box').before('');
+    padEle('.comment-box');
+} 
+//博客园
+function CnBlogs(){
+    gAdElements = ["#right","#mystats","#bnr_pic","#MySignature","#blog_post_info_block",
+        ".postDesc","#comment_form","#footer","#blog-comments-placeholder"];
+    gNavigator = ["#mylinks","#sideBar","#mylinks","#sideBar",'#header'];  
+    gComputeCss = [["#left",{"left":"0px","top":"0px"}],
+                [".post",{'border':"none;"}],
+                ["#mainContent",{"margin-left":"150px","margin-right":"150px"}],
+                ["body",{"background":""}]];
+}
+//YiiBai
+function YiiBai(){
+    gAdElements = ["#google_image_div","#adContent-clickOverlay","#adv-javalive",
+        "#adContent","iframe",".adsbygoogle","#footer-copyright",".footer"];
+}
+//简书
+function JianShu(){
+    gAdElements = ['.navbar','#web-note-ad-fixed','.author',
+    '.support-author','.show-foot','.follow-detail','.meta-bottom','#web-note-ad-1',
+    '.comment-list','.normal-comment-list'];
+    gNavigator= ['.side-tool','.note-bottom'];
+     padEle('.show-content');
+}
+//百度
+function BaiDu(){
+    var $normal_ads = $("span:contains('广告')");
+    var $brand_ads = $("a:contains('品牌广告')");
+    function removeItem(v){
+        var $this = $(v);
+        var i=0;
+        while($this.parent().attr('id')!=='content_left'&&i<10){
+            $this = $this.parent();
+            i++;
+        }
+        if($this.parent().attr('id') === 'content_left') {
+            $this.hide();
+        }
+    }
+    $normal_ads.each(function(i,v){
+        removeItem(v);
+    });
+    $brand_ads.each(function(i,v){
+        removeItem(v);
+    });
+    $('.s_btn').one('click', function(){
+        killAdTimeout(true);
+    });
+}
 
 function getUrlCategory(){
      var host = window.location.host;
@@ -42,14 +116,11 @@ function killAd(){
          }else{
             var count = 0;
             var timer = setInterval(function(){
-                if(count>10){
-                    clearInterval(timer);
-                    count=0;
-                }else{
-                    (adUrls[host][0])();
-                    count++;
-                }//end else
-            },600);
+               //针对异步加载的情况
+               (adUrls[host][0])();
+               count++;
+               console.log("adhunter定时次数: ",count);
+            },300);
          }//end else
         installToolbar();
         saveNavigator();
@@ -163,6 +234,7 @@ function emitToolbarCss(){
             text-align:center;
             position:fixed;
             cursor:pointer;
+            display:none;
         }`,
         `.compile-mode{
             right:20px;
@@ -275,62 +347,3 @@ function padEle(ele,isBefore=true){
         $(ele).before(str);
     }
 } 
-//CSDN
-function CSDN(){
-    gAdElements = ["iframe","#adAways","header",".t0",".persion_article",".article-bar-bottom",
-        ".pulllog-box",'.p4course_target',".pulllog-box",".meau-gotop-box","#pic_container",".answer-box",
-        "#_kfgdmxteyi",".pic_container","iframe",".newsfeed",".box-box-large",".bdsharebuttonbox","#_360_interactive",
-        "#asideNewComments",".mb8",".custom-box"];
-    gNavigator = ["#csdn-toolbar",".comment-box","#asideArchive",".related-article","#asideHotArticle",".meau-list","#asideProfile",
-    "#asideNewArticle","#asideCategory",".recommend-box",".recommend-box-ident","._4paradigm_box"];
-    // $('.comment-box').before('');
-    padEle('.comment-box');
-} 
-//博客园
-function CnBlogs(){
-	gAdElements = ["#header","#right","#mystats","#mylinks","#bnr_pic","#sideBar","#MySignature","#blog_post_info_block",
-        ".postDesc","#comment_form","#footer","#blog-comments-placeholder"];
-    gNavigator = ["#mylinks","#sideBar"];  
-    gComputeCss = [["#left",{"left":"0px","top":"0px"}],
-                [".post",{'border':"none;"}],
-                ["#mainContent",{"margin-left":"150px","margin-right":"150px"}],
-                ["body",{"background":""}]];
-}
-//YiiBai
-function YiiBai(){
-    gAdElements = ["#google_image_div","#adContent-clickOverlay","#adv-javalive",
-        "#adContent","iframe",".adsbygoogle","#footer-copyright",".footer"];
-}
-//简书
-function JianShu(){
-    gAdElements = ['.navbar','#web-note-ad-fixed','.author',
-    '.support-author','.show-foot','.follow-detail','.meta-bottom','#web-note-ad-1',
-    '.comment-list','.normal-comment-list'];
-    gNavigator= ['.side-tool','.note-bottom'];
-     padEle('.show-content');
-}
-//百度
-function BaiDu(){
-	var $normal_ads = $("span:contains('广告')");
-	var $brand_ads = $("a:contains('品牌广告')");
-	function removeItem(v){
-        var $this = $(v);
-        var i=0;
-        while($this.parent().attr('id')!=='content_left'&&i<10){
-            $this = $this.parent();
-            i++;
-        }
-        if($this.parent().attr('id') === 'content_left') {
-            $this.hide();
-        }
-	}
-	$normal_ads.each(function(i,v){
-		removeItem(v);
-	});
-	$brand_ads.each(function(i,v){
-		removeItem(v);
-	});
-	$('.s_btn').one('click', function(){
-		killAdTimeout(true);
-	});
-}
