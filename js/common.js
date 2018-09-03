@@ -35,6 +35,7 @@ function CSDN(){
         "#asideNewComments",".mb8",".custom-box",".box-box-always",".box-box-default"];
     gNavigator = ["#csdn-toolbar",".comment-box","#asideArchive",".related-article","#asideHotArticle",".meau-list","#asideProfile",
     "#asideNewArticle","#asideCategory",".recommend-box",".recommend-box-ident","._4paradigm_box"];
+    gComputeElements = [[".blog-content-box",{"left":"-15%"}]];
     // $('.comment-box').before('');
     padEle('.comment-box');
 } 
@@ -43,7 +44,7 @@ function CnBlogs(){
     gAdElements = ["#right","#mystats","#bnr_pic","#MySignature","#blog_post_info_block",
         ".postDesc","#comment_form","#footer","#blog-comments-placeholder"];
     gNavigator = ["#mylinks","#sideBar","#mylinks","#sideBar",'#header'];  
-    gComputeCss = [["#left",{"left":"0px","top":"0px"}],
+    gComputeElements = [["#left",{"left":"0px","top":"0px"}],
                 [".post",{'border':"none;"}],
                 ["#mainContent",{"margin-left":"150px","margin-right":"150px"}],
                 ["body",{"background":""}]];
@@ -59,7 +60,7 @@ function JianShu(){
     '.support-author','.show-foot','.follow-detail','.meta-bottom','#web-note-ad-1',
     '.comment-list','.normal-comment-list'];
     gNavigator= ['.side-tool','.note-bottom'];
-     padEle('.show-content');
+    padEle('.show-content');
 }
 //百度
 function BaiDu(){
@@ -125,6 +126,7 @@ function killAd(){
         installToolbar();
         saveNavigator();
         hiddenNavElements();
+        pushComputeElements();
       }
     }catch(e){
         console.log(e);
@@ -171,6 +173,12 @@ function popCssFromStack(elements){
         $(v[0]).css('width',v[1][2]);
         $(v[0]).css('height',v[1][3]);
         $(v[0]).show();
+    });
+}
+function popComputeElements(){
+    gComputeBeforeCss.forEach(function(v,i,a){
+        var e = v[0]; var css = v[1];
+        $(e).css('left',css[0]).css('top',css[1]).css('width',css[2]).css('height',css[3]);
     });
 }
 // function isArray(o){
@@ -262,6 +270,7 @@ $(document).on('click','.compile-mode',function(){
     if(gMode==0||gMode === undefined){
         gMode=1
         popCssFromStack();
+        popComputeElements();
     }else{
         gMode = 0;
         killAd();
@@ -302,7 +311,6 @@ function delStarBlog(url){
     chrome.storage.local.remove(url.toString());
 }
 
-
 function emitToolbarJs(js,ele){
     // if(gEmitJs>0){
     //     return;
@@ -330,15 +338,22 @@ function emitToolbarHtml(){
  * @date 2018/8/19 23:21:00
  */
  var gAdElements=[]; //页面必须杀掉的广告元素
- var gNavigator=[];//页面保留的导航元素
- var gComputeCss=[];//调整过的CSS
- var gComputeBeforeCss=[];
- function pushComputeCss(){
-    gComputeCss.forEach(function(v,i,a){
-        css = [];
-        (v[1]).forEach(function(v1,i1,a1){
-            
+ var gNavigator=[];  //页面保留的导航元素
+ var gComputeElements=[];
+ var gComputeCss=[]; //调整过的CSS
+ var gComputeBeforeCss=[];//调整前的CSS
+ function pushComputeElements(){
+    if(gComputeCss.length === 0){
+        gComputeElements.forEach(function(v,i,a){
+            var ele = v[0];
+            var computeCss = v[1];
+            var css=getElementAllCss($(ele)[0]);
+            gComputeBeforeCss.push([ele,css]);
+            gComputeCss.push([ele,computeCss]);
         });
+    }
+    gComputeCss.forEach(function(v,i,a){
+        $(v[0]).css(v[1]);
     });
  }
 function padEle(ele,isBefore=true){
