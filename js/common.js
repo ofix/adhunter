@@ -162,8 +162,10 @@ function pushCssToStack(elements){
             console.error("element "+v+" not found. ");
             return false;
         }
-        var css=getElementAllCss(ele);
-        gOriginCssStack.push([v,css]);
+        if(ele != undefined){
+            var css=getElementAllCss(ele);
+            gOriginCssStack.push([v,css]);
+        }
     });
 }
 function popCssFromStack(elements){
@@ -347,9 +349,12 @@ function emitToolbarHtml(){
         gComputeElements.forEach(function(v,i,a){
             var ele = v[0];
             var computeCss = v[1];
-            var css=getElementAllCss($(ele)[0]);
-            gComputeBeforeCss.push([ele,css]);
-            gComputeCss.push([ele,computeCss]);
+            var $ele = $(ele);
+            if($ele[0]){
+                var css=getElementAllCss($ele[0]);
+                gComputeBeforeCss.push([ele,css]);
+                gComputeCss.push([ele,computeCss]);
+            }
         });
     }
     gComputeCss.forEach(function(v,i,a){
