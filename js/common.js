@@ -5,7 +5,7 @@ var adUrls = {
     "www.yiibai.com":[YiiBai],
     "www.jianshu.com":[JianShu],
     "www.sass.hk":[Sass],
-    "webpack.wuhaolin.cn":[Webpack]
+    "webpack.wuhaolin.cn":[Webpack,1]
 };
 
 var map = {
@@ -15,11 +15,54 @@ var map = {
     "www.yiibai.com":"yiibai"
 };
 
+gPrint = 0;
+
 function Webpack(){
     $('iframe').remove();
-    // // $('#cf-style').remove();
-    // // $('link[as$="script"]').remove();
-    // $('.gitbook-plugin-modal').remove();
+    if(window.location.href == 'http://webpack.wuhaolin.cn'){
+        printBook();
+        return false;
+    }
+    $('.book-body').css('overflow-y','visible');
+    gAdElements = [".github-stargazers",".github-me",'.book-header','.navigation-prev','.navigation-next'];
+    if(gPrint == 0){
+        setTimeout(function(){
+            document.execCommand('print');
+        },500); 
+        gPrint = 1;
+    }
+}
+
+function printBook(){
+    var pages = [];
+    $('a').each(function(){
+        var href = $(this).attr('href');
+        if(/^http.*/.test(href)){
+            return true;
+        }
+        if(href == undefined){
+            return true;
+        }
+        if(/^\..*/.test(href)){
+            return true;
+        }
+        if(/^#.*/.test(href)){
+            return true;
+        }
+        var index = $.inArray(href,pages);
+        if(index >= 0){
+            
+        }else{
+            pages.push(href);
+        }
+    });
+    for(var i=0,len=pages.length;i<len;i++){
+        var url= 'http://webpack.wuhaolin.cn/'+pages[i];
+        setTimeout(function(){
+            window.open(url,'_blank');
+        },5*i+500);
+    }
+    return pages;
 }
 
 //sass
@@ -112,16 +155,17 @@ function killAd(){
     try{
       if(adUrls.hasOwnProperty(host)){
          if(adUrls[host].length ===1){
-             (adUrls[host][0])();
-             hiddenAdElements();
+            hiddenAdElements();
+            (adUrls[host][0])();
          }else{
             var count = 0;
             var timer = setInterval(function(){
                //针对异步加载的情况
+               hiddenAdElements();
                (adUrls[host][0])();
                count++;
                console.log("adhunter定时次数: ",count);
-            },300);
+            },1500);
          }//end else
         installToolbar();
         saveNavigator();
