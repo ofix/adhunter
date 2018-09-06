@@ -1,5 +1,5 @@
 var adUrls = {
-    "blog.csdn.net":[CSDN],
+    "blog.csdn.net":[CSDN,1],
     "www.cnblogs.com":[CnBlogs],
     "www.baidu.com":[BaiDu,1],
     "www.yiibai.com":[YiiBai],
@@ -74,12 +74,11 @@ function Sass(){
 function CSDN(){
     gAdElements = ["iframe","#adAways","header",".t0",".persion_article",".article-bar-bottom",
         ".pulllog-box",'.p4course_target',".pulllog-box",".meau-gotop-box","#pic_container",".answer-box",
-        "#_kfgdmxteyi",".pic_container","iframe",".newsfeed",".box-box-large",".bdsharebuttonbox","#_360_interactive",
-        "#asideNewComments",".mb8",".custom-box",".box-box-always",".box-box-default"];
+        "#_kfgdmxteyi",".pic_container",".newsfeed",".box-box-large",".bdsharebuttonbox","#_360_interactive",
+        "#asideNewComments",".mb8",".custom-box",".box-box-always",".box-box-default",'.box-box-aways'];
     gNavigator = ["#csdn-toolbar",".comment-box","#asideArchive",".related-article","#asideHotArticle",".meau-list","#asideProfile",
     "#asideNewArticle","#asideCategory",".recommend-box",".recommend-box-ident","._4paradigm_box"];
     gComputeElements = [[".blog-content-box",{"left":"-15%"}]];
-    // $('.comment-box').before('');
     padEle('.comment-box');
 } 
 //博客园
@@ -141,7 +140,7 @@ function getUrlCategory(){
 
 function hiddenAdElements(){
 	gAdElements.forEach(function(v,i,a){
-	   $(v).hide().width(0).height(0).css("overflow","hidden");
+	   $(v).remove();
 	});
     gMode = 0;
 }
@@ -159,13 +158,19 @@ function killAd(){
             (adUrls[host][0])();
          }else{
             var count = 0;
+            hiddenAdElements();
+            (adUrls[host][0])();
+            count++;
             var timer = setInterval(function(){
                //针对异步加载的情况
                hiddenAdElements();
                (adUrls[host][0])();
                count++;
+               if(count > 10){
+                  clearInterval(timer);
+               }
                console.log("adhunter定时次数: ",count);
-            },1500);
+            },500);
          }//end else
         installToolbar();
         saveNavigator();
