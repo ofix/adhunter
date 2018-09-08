@@ -5,7 +5,8 @@ var adUrls = {
     "www.yiibai.com":[YiiBai],
     "www.jianshu.com":[JianShu],
     "www.sass.hk":[Sass],
-    "webpack.wuhaolin.cn":[Webpack,1]
+    "webpack.wuhaolin.cn":[Webpack,1],
+    "www.jb51.net":[jb51,1]
 };
 
 var map = {
@@ -16,6 +17,12 @@ var map = {
 };
 
 gPrint = 0;
+
+function jb51(){
+    gAdElements = [".mainlr",".blank5","#txtlink","#imgRow0",
+    ".topimg",".logo",".logom",".article-content .lbd","iframe",".jb51ewm",".article-right .r300",".logor","#pic_container","#google_center_div",".adsbygoogle"];
+    $('script').remove();
+}
 
 function Webpack(){
     $('iframe').remove();
