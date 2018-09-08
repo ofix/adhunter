@@ -184,6 +184,19 @@ function killAd(){
         hiddenNavElements();
         pushComputeElements();
       }
+      //去除搜索引擎的广告
+      $('.qihoobannerslider').remove();
+      var $iframe = $('iframe');
+      for(var i=0,len=$iframe.length; i<len;i++){
+        var src = $iframe.eq(i).attr('src');
+        if(src !== undefined){
+            if(src.indexOf('baidu')!== -1 
+                ||src.indexOf('.googleads')!==-1){
+                $iframe.eq(i).remove();
+                console.log("移除搜索引擎广告 ",src);
+            }
+        }
+      }
     }catch(e){
         console.log(e);
     }
